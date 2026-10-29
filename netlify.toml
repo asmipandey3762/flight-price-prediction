@@ -1,0 +1,9 @@
+# Netlify config - the demo website is inside the docs folder
+[build]
+  publish = "docs"
+  command = ""
+
+[[headers]]
+  for = "/model.json"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"

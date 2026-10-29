@@ -56,9 +56,17 @@ Complete workflow followed:
 
 ## 🌐 Live Demo
 
-**👉 [Try the interactive fare predictor](https://asmipandey3762.github.io/flight-price-prediction/)**
+**👉 Netlify:** https://flight-price-prediction-asmi.netlify.app
+**👉 Render:** https://flight-price-prediction.onrender.com
 
-Select source/destination city, airline, class, stops, timings and days left — the trained XGBoost model predicts the ticket price instantly in the browser. It also shows a chart of how the fare changes if you book on a different day. (Code is in the `docs/` folder.)
+Select source/destination city, airline, class, stops, timings and days left — the trained XGBoost model predicts the ticket price instantly in the browser. It also shows a chart of how the fare changes if you book on a different day. (Website code is in the `docs/` folder.)
+
+### Deploy your own copy
+
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/asmipandey3762/flight-price-prediction)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/asmipandey3762/flight-price-prediction)
+
+Both platforms read their settings from the repo (`netlify.toml` and `render.yaml`) and publish the `docs/` folder as a static site — no build step needed.
 
 ## 📄 Project Report
 
@@ -97,6 +105,8 @@ jupyter notebook Flight_Price_Prediction.ipynb
 ├── report/
 │   ├── Flight_Price_Prediction_Report.pdf
 │   └── Flight_Price_Prediction_Report.docx
+├── netlify.toml                    # Netlify deploy config
+├── render.yaml                     # Render deploy config
 ├── requirements.txt
 └── README.md
 ```
