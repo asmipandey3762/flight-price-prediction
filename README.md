@@ -62,6 +62,8 @@ Complete workflow followed:
 
 **💻 GitHub:** https://github.com/asmipandey3762/flight-price-prediction
 
+**🔗 LinkedIn post:** https://lnkd.in/p/gCmaf_9w
+
 Select source/destination city, airline, class, stops, timings and days left — the trained XGBoost model predicts the ticket price instantly in the browser. It also shows a chart of how the fare changes if you book on a different day. (Website code is in the `docs/` folder.)
 
 ### Deploy your own copy
