@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FareCast India</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: sky-light tool page — planner form beside a boarding-pass result, then evidence sections */
+:root{
+  --sky:#f3f7fc; --card:#ffffff; --ink:#13233f; --muted:#5b6b85; --line:#dfe7f1;
+  --jet:#1257b8; --jet-soft:#e6effb; --sun:#f2a31b; --sun-soft:#fff4de; --good:#1a8f5a;
+  --display:"Plus Jakarta Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --body:"Plus Jakarta Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+body{background:var(--sky);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:1120px;margin:0 auto}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;letter-spacing:-.02em}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--jet)}
+header{padding-block:32px 20px;display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between}
+header h1{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1.1}
+header h1 span{color:var(--jet)}
+header p{color:var(--muted);max-width:56ch;margin:8px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;color:var(--muted)}
+.chip b{color:var(--ink);font-family:var(--mono)}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;align-items:start}
+@media(max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 1px 2px rgba(19,35,63,.04),0 8px 24px rgba(19,35,63,.05);min-width:0}
+.panel h2{font-size:18px;margin-bottom:4px}
+.sub{color:var(--muted);font-size:13.5px;margin:0 0 16px}
+form{display:grid;gap:14px}
+.row{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:end}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:grid;gap:6px;font-size:12.5px;font-weight:600;color:var(--muted)}
+select,input[type=number]{font:inherit;font-size:15px;color:var(--ink);background:var(--sky);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;min-width:0}
+select:focus-visible,input:focus-visible,button:focus-visible{outline:3px solid color-mix(in srgb,var(--jet) 35%,transparent);outline-offset:1px}
+.swap{border:1px solid var(--line);background:var(--card);border-radius:10px;width:42px;height:44px;cursor:pointer;font-size:18px;color:var(--jet)}
+.swap:hover{background:var(--jet-soft)}
+.seg{display:flex;background:var(--sky);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;background:transparent;border-radius:9px;padding:9px 6px;font:inherit;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--card);color:var(--jet);box-shadow:0 1px 3px rgba(19,35,63,.12)}
+.range{display:grid;gap:6px}
+.range .top{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;color:var(--muted)}
+.range .top b{font-family:var(--mono);color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--jet)}
+.note{font-size:12.5px;color:#8a5a00;background:var(--sun-soft);border-radius:10px;padding:8px 12px}
+/* boarding pass */
+.pass{display:grid;grid-template-columns:minmax(0,1fr) 150px;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 1px 2px rgba(19,35,63,.04),0 10px 30px rgba(18,87,184,.10)}
+.pass .main{padding:20px 22px;min-width:0}
+.pass .stub{background:var(--jet);color:#fff;padding:20px 16px;display:grid;align-content:space-between;gap:10px;position:relative}
+.pass .stub::before{content:"";position:absolute;left:-1px;top:14px;bottom:14px;border-left:2px dashed rgba(255,255,255,.55)}
+.route{display:flex;align-items:center;gap:12px}
+.iata{font-family:var(--mono);font-size:34px;font-weight:700;letter-spacing:.02em;line-height:1}
+.city{font-size:12.5px;color:var(--muted)}
+.path{flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 11px);position:relative;min-width:30px}
+.path::after{content:"✈";position:absolute;left:50%;top:50%;transform:translate(-50%,-55%);color:var(--jet);font-size:18px;background:var(--card);padding:0 4px}
+.meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.meta div{display:grid;gap:2px;min-width:0}
+.meta span{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.meta b{font-size:14px;overflow-wrap:anywhere}
+.stub .lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;opacity:.8;font-weight:700}
+.fare{font-family:var(--mono);font-size:28px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.band{font-size:12px;opacity:.9}
+.verdict{margin-top:14px;font-size:14px;padding:10px 14px;border-radius:12px;background:var(--jet-soft);color:var(--ink)}
+.verdict b{color:var(--jet)}
+@media(max-width:520px){.pass{grid-template-columns:minmax(0,1fr)}.pass .stub::before{left:14px;right:14px;top:-1px;bottom:auto;border-left:0;border-top:2px dashed rgba(255,255,255,.55)}.iata{font-size:28px}}
+.chartbox{margin-top:16px}
+.chartbox h3{font-size:15px}
+svg text{font-family:var(--body);fill:var(--muted);font-size:11px}
+section{margin-top:28px}
+section > h2{font-size:22px;margin:4px 0 6px}
+section > .sub{max-width:70ch}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:14px}
+th,td{padding:12px 14px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+th:first-child,td:first-child{text-align:left}
+th{font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--sky)}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--mono);font-size:13px}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--sun-soft);color:#8a5a00;margin-left:8px;vertical-align:1px}
+.acc{display:flex;align-items:center;gap:10px;justify-content:flex-end}
+.acc i{display:block;height:6px;border-radius:3px;background:var(--jet);width:90px;max-width:90px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+@media(max-width:760px){.two{grid-template-columns:minmax(0,1fr)}}
+.bars{display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:96px minmax(0,1fr) 72px;gap:10px;align-items:center;font-size:13.5px}
+.bar .track{height:12px;background:var(--sky);border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;background:var(--jet);border-radius:6px}
+.bar .fill.hot{background:var(--sun)}
+.bar b{font-family:var(--mono);font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.step h3{font-size:15px;margin-bottom:4px}
+.step p{margin:0;font-size:13.5px;color:var(--muted)}
+.step .n{font-family:var(--mono);font-size:12px;color:var(--jet);font-weight:700}
+footer{margin-top:32px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px 20px;justify-content:space-between;color:var(--muted);font-size:13px}
+footer a{color:var(--jet);font-weight:600}
+.loading{color:var(--muted);font-size:13px}
+@media (prefers-reduced-motion:no-preference){.fare{transition:opacity .2s}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header>
+  <div>
+    <div class="eyebrow">Predictive Analytics Project</div>
+    <h1>FareCast <span>India</span></h1>
+    <p>Pick a flight between India's six metro cities and the trained XGBoost model predicts the ticket price right here in your browser.</p>
+  </div>
+  <div class="chips">
+    <div class="chip"><b>3,00,153</b> flights</div>
+    <div class="chip"><b>5</b> models compared</div>
+    <div class="chip">Best R² <b>98.74%</b></div>
+  </div>
+</header>
+
+<div class="grid">
+  <div class="panel">
+    <h2>Plan a flight</h2>
+    <p class="sub">Change any option and the price updates instantly.</p>
+    <form id="f" autocomplete="off">
+      <div class="row">
+        <label>From<select id="src"></select></label>
+        <button type="button" class="swap" id="swap" aria-label="Swap cities">⇄</button>
+        <label>To<select id="dst"></select></label>
+      </div>
+      <label>Airline<select id="air"></select></label>
+      <div>
+        <label style="margin-bottom:6px">Class</label>
+        <div class="seg" id="cls" role="group" aria-label="Class">
+          <button type="button" data-v="0" aria-pressed="true">Economy</button>
+          <button type="button" data-v="1" aria-pressed="false">Business</button>
+        </div>
+      </div>
+      <div>
+        <label style="margin-bottom:6px">Stops</label>
+        <div class="seg" id="stp" role="group" aria-label="Stops">
+          <button type="button" data-v="0" aria-pressed="true">Non-stop</button>
+          <button type="button" data-v="1" aria-pressed="false">1 stop</button>
+          <button type="button" data-v="2" aria-pressed="false">2+ stops</button>
+        </div>
+      </div>
+      <div class="row2">
+        <label>Departure<select id="dep"></select></label>
+        <label>Arrival<select id="arr"></select></label>
+      </div>
+      <div class="range">
+        <div class="top"><span>Days left before travel</span><b id="dlv">20 days</b></div>
+        <input type="range" id="dl" min="1" max="49" value="20">
+      </div>
+      <div class="range">
+        <div class="top"><span>Flight duration</span><b id="duv">2.2 h</b></div>
+        <input type="range" id="du" min="0.8" max="30" step="0.1" value="2.2">
+      </div>
+      <div class="note" id="warn" hidden>Business class is only flown by Vistara and Air India in this data, so the airline was switched to Vistara.</div>
+    </form>
+  </div>
+
+  <div style="min-width:0">
+    <div class="pass" aria-live="polite">
+      <div class="main">
+        <div class="route">
+          <div><div class="iata" id="pSrc">DEL</div><div class="city" id="pSrcN">Delhi</div></div>
+          <div class="path"></div>
+          <div style="text-align:right"><div class="iata" id="pDst">BOM</div><div class="city" id="pDstN">Mumbai</div></div>
+        </div>
+        <div class="meta">
+          <div><span>Airline</span><b id="pAir">Vistara</b></div>
+          <div><span>Class</span><b id="pCls">Economy</b></div>
+          <div><span>Stops</span><b id="pStp">Non-stop</b></div>
+          <div><span>Departs</span><b id="pDep">Morning</b></div>
+          <div><span>Duration</span><b id="pDur">2.2 h</b></div>
+          <div><span>Booked</span><b id="pDl">20 days ahead</b></div>
+        </div>
+      </div>
+      <div class="stub">
+        <div><div class="lbl">Predicted fare</div><div class="fare" id="fare">…</div></div>
+        <div class="band" id="band">Model loading</div>
+      </div>
+    </div>
+    <div class="verdict" id="verdict">Loading the trained model…</div>
+
+    <div class="panel chartbox">
+      <h3>Same flight, different booking day</h3>
+      <p class="sub" style="margin-bottom:8px">Predicted fare for every day from 49 days out to 1 day before departure. The dot is your selection.</p>
+      <div id="chart" style="overflow-x:auto"><div class="loading">Drawing chart…</div></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="eyebrow">Results</div>
+  <h2>5 models, one test set</h2>
+  <p class="sub">All models were trained on 80% of the cleaned data and tested on the remaining 59,143 flights. For regression, the R² score is used as accuracy.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Model</th><th>R² score (accuracy)</th><th>MSE</th><th>RMSE (₹)</th><th>MAE (₹)</th><th>5-fold CV R²</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section class="two">
+  <div class="panel">
+    <h2>Average economy fare by airline</h2>
+    <p class="sub">Across all routes and booking days.</p>
+    <div class="bars" id="airBars"></div>
+  </div>
+  <div class="panel">
+    <h2>Last-minute booking costs more</h2>
+    <p class="sub">Average economy fare by how many days before travel the ticket was booked.</p>
+    <div class="bars" id="dayBars"></div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">How it was built</div>
+  <h2>Project pipeline</h2>
+  <div class="steps" style="margin-top:12px">
+    <div class="step"><div class="n">Step 1</div><h3>Data cleaning</h3><p>Dropped index and flight code columns, removed 2,213 duplicates and 2,226 duration outliers (IQR method).</p></div>
+    <div class="step"><div class="n">Step 2</div><h3>EDA</h3><p>Class, airline, days left, stops, departure time and route-wise analysis with charts.</p></div>
+    <div class="step"><div class="n">Step 3</div><h3>Encoding</h3><p>Class as 0/1, stops as 0/1/2, one-hot encoding for airline, cities and time slots.</p></div>
+    <div class="step"><div class="n">Step 4</div><h3>Modelling</h3><p>Linear, Ridge, Decision Tree, Random Forest and XGBoost compared on R², MSE, RMSE and MAE.</p></div>
+  </div>
+</section>
+
+<footer>
+  <span>Dataset: <a href="https://www.kaggle.com/datasets/shubhambathwal/flight-price-prediction" target="_blank" rel="noopener">Flight Price Prediction (EaseMyTrip), Kaggle</a></span>
+  <span>Code: <a href="https://github.com/asmipandey3762/flight-price-prediction" target="_blank" rel="noopener">GitHub repo</a> · Made by Asmi Pandey</span>
+</footer>
+</div>
+
+<script>
+const IATA={Delhi:'DEL',Mumbai:'BOM',Bangalore:'BLR',Kolkata:'CCU',Hyderabad:'HYD',Chennai:'MAA'};
+const nice=s=>s.replace(/_/g,' ');
+const STOPS=['Non-stop','1 stop','2+ stops'];
+const RESULTS=[
+ ['XGBoost',0.9874,'6,538,317','2,557','1,342',0.9795,true],
+ ['Random Forest',0.9864,'7,046,288','2,654','1,119',0.9785],
+ ['Decision Tree',0.9811,'9,788,739','3,129','1,419',0.9695],
+ ['Linear Regression',0.9096,'46,761,203','6,838','4,536',0.9098],
+ ['Ridge Regression',0.9096,'46,761,199','6,838','4,536',0.9098]];
+const AIR={AirAsia:4091,Indigo:5324,GO_FIRST:5652,SpiceJet:6179,Air_India:7314,Vistara:7807};
+const DAYS=[['1–3 days',13808],['4–7 days',10565],['8–14 days',10048],['15–30 days',5588],['31–49 days',4919]];
+const fmt=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const $=id=>document.getElementById(id);
+
+// static sections
+$('tbody').innerHTML=RESULTS.map(r=>`<tr><td><b>${r[0]}</b>${r[6]?'<span class="pill">Best</span>':''}</td>
+ <td><div class="acc"><span class="num" style="font-family:var(--mono)">${(r[1]*100).toFixed(2)}%</span><i style="width:${Math.max(4,(r[1]-0.85)/0.15*90)}px"></i></div></td>
+ <td class="num">${r[2]}</td><td class="num">${r[3]}</td><td class="num">${r[4]}</td><td class="num">${r[5].toFixed(4)}</td></tr>`).join('');
+const amax=Math.max(...Object.values(AIR));
+$('airBars').innerHTML=Object.entries(AIR).map(([k,v])=>`<div class="bar"><span>${nice(k)}</span><div class="track"><div class="fill" style="width:${v/amax*100}%"></div></div><b>${fmt(v)}</b></div>`).join('');
+const dmax=DAYS[0][1];
+$('dayBars').innerHTML=DAYS.map(([k,v],i)=>`<div class="bar"><span>${k}</span><div class="track"><div class="fill ${i<3?'hot':''}" style="width:${v/dmax*100}%"></div></div><b>${fmt(v)}</b></div>`).join('');
+
+let M=null;
+const st={src:'Delhi',dst:'Mumbai',air:'Vistara',cls:0,stp:0,dep:'Morning',arr:'Afternoon',dl:20,du:2.2};
+
+function fill(sel,list,val){sel.innerHTML=list.map(v=>`<option value="${v}">${nice(v)}</option>`).join('');sel.value=val}
+function vec(s){
+  const x=new Array(M.cols.length).fill(0);
+  const set=(name,v)=>{const i=M.cols.indexOf(name);if(i>=0)x[i]=v};
+  set('stops',s.stp);set('class',s.cls);set('duration',s.du);set('days_left',s.dl);
+  set('airline_'+s.air,1);set('source_city_'+s.src,1);set('destination_city_'+s.dst,1);
+  set('departure_time_'+s.dep,1);set('arrival_time_'+s.arr,1);
+  return x;
+}
+function predict(s){
+  const x=vec(s);let y=M.base;
+  for(const [F,T,L,R] of M.trees){let i=0;while(F[i]>=0)i=x[F[i]]<T[i]?L[i]:R[i];y+=T[i]}
+  return Math.max(y,1000);
+}
+function defaultDur(){
+  const k=`${st.src}|${st.dst}|${st.stp}`;
+  if(M.dur[k]!=null){st.du=M.dur[k];$('du').value=st.du}
+}
+function render(){
+  if(!M)return;
+  $('dlv').textContent=st.dl+(st.dl==1?' day':' days');$('duv').textContent=(+st.du).toFixed(1)+' h';
+  $('pSrc').textContent=IATA[st.src];$('pSrcN').textContent=st.src;
+  $('pDst').textContent=IATA[st.dst];$('pDstN').textContent=st.dst;
+  $('pAir').textContent=nice(st.air);$('pCls').textContent=st.cls?'Business':'Economy';
+  $('pStp').textContent=STOPS[st.stp];$('pDep').textContent=nice(st.dep);
+  $('pDur').textContent=(+st.du).toFixed(1)+' h';$('pDl').textContent=st.dl+(st.dl==1?' day':' days')+' ahead';
+  const p=predict(st);
+  $('fare').textContent=fmt(p);
+  $('band').textContent='Typical error ± ₹1,342 (MAE)';
+  // curve
+  const pts=[];for(let d=49;d>=1;d--)pts.push([d,predict({...st,dl:d})]);
+  const best=pts.reduce((a,b)=>b[1]<a[1]?b:a);
+  const saving=p-best[1];
+  $('verdict').innerHTML=saving>200&&best[0]!==st.dl
+    ? `Book <b>${best[0]} days ahead</b> instead and the model expects <b>${fmt(best[1])}</b>, about ${fmt(saving)} cheaper.`
+    : `This is close to the <b>cheapest booking day</b> for this flight.`;
+  drawChart(pts,best);
+}
+function drawChart(pts,best){
+  const W=560,H=210,l=56,r=14,t=14,b=30;
+  const ys=pts.map(p=>p[1]);let lo=Math.min(...ys),hi=Math.max(...ys);
+  const pad=(hi-lo)*.12||500;lo=Math.max(0,lo-pad);hi+=pad;
+  const step=Math.pow(10,Math.floor(Math.log10((hi-lo)/4)));const st2=[1,2,2.5,5,10].map(m=>m*step).find(s=>(hi-lo)/s<=5);
+  lo=Math.floor(lo/st2)*st2;hi=Math.ceil(hi/st2)*st2;
+  const X=d=>l+(49-d)/48*(W-l-r), Y=v=>t+(hi-v)/(hi-lo)*(H-t-b);
+  let g='';for(let v=lo;v<=hi+1e-6;v+=st2){g+=`<line x1="${l}" x2="${W-r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${l-8}" y="${Y(v)+4}" text-anchor="end">${v>=1000?(v/1000)+'k':v}</text>`}
+  for(const d of [49,40,30,20,10,1])g+=`<text x="${X(d)}" y="${H-10}" text-anchor="middle">${d}d</text>`;
+  const line=pts.map((p,i)=>(i?'L':'M')+X(p[0]).toFixed(1)+' '+Y(p[1]).toFixed(1)).join(' ');
+  const area=line+` L${X(1)} ${H-b} L${X(49)} ${H-b} Z`;
+  const cur=pts.find(p=>p[0]===st.dl);
+  $('chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:420px;display:block" role="img" aria-label="Predicted fare by days left">
+   ${g}<path d="${area}" fill="var(--jet-soft)"/><path d="${line}" fill="none" stroke="var(--jet)" stroke-width="2.2"/>
+   <circle cx="${X(best[0])}" cy="${Y(best[1])}" r="4.5" fill="var(--good)"/>
+   <text x="${X(best[0])}" y="${Y(best[1])-10}" text-anchor="middle" style="fill:var(--good);font-weight:700">cheapest</text>
+   <line x1="${X(cur[0])}" x2="${X(cur[0])}" y1="${t}" y2="${H-b}" stroke="var(--sun)" stroke-dasharray="3 3"/>
+   <circle cx="${X(cur[0])}" cy="${Y(cur[1])}" r="6" fill="var(--sun)" stroke="#fff" stroke-width="2"/>
+   <text x="${l}" y="${H-10}" text-anchor="start" style="opacity:0"> </text></svg>`;
+}
+function segs(id,key){
+  $(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    st[key]=+b.dataset.v;$(id).querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed',o===b));
+    if(key==='cls'&&st.cls===1&&!['Vistara','Air_India'].includes(st.air)){st.air='Vistara';$('air').value='Vistara';$('warn').hidden=false}
+    if(key==='stp')defaultDur();
+    render();
+  });
+}
+async function init(){
+  try{
+    M=await (await fetch('model.json')).json();
+  }catch(e){$('verdict').textContent='The model file could not be loaded. Refresh the page to try again.';return}
+  const cities=Object.keys(IATA);
+  fill($('src'),cities,st.src);fill($('dst'),cities,st.dst);
+  fill($('air'),['Vistara','Air_India','Indigo','GO_FIRST','AirAsia','SpiceJet'],st.air);
+  const slots=['Early_Morning','Morning','Afternoon','Evening','Night','Late_Night'];
+  fill($('dep'),slots,st.dep);fill($('arr'),slots,st.arr);
+  const fixSame=(changed)=>{if(st.src===st.dst){const other=cities.find(c=>c!==st[changed]);if(changed==='src'){st.dst=other;$('dst').value=other}else{st.src=other;$('src').value=other}}};
+  $('src').onchange=e=>{st.src=e.target.value;fixSame('src');defaultDur();render()};
+  $('dst').onchange=e=>{st.dst=e.target.value;fixSame('dst');defaultDur();render()};
+  $('swap').onclick=()=>{[st.src,st.dst]=[st.dst,st.src];$('src').value=st.src;$('dst').value=st.dst;render()};
+  $('air').onchange=e=>{st.air=e.target.value;if(st.cls===1&&!['Vistara','Air_India'].includes(st.air)){st.cls=0;$('cls').querySelectorAll('button').forEach(o=>o.setAttribute('aria-pressed',o.dataset.v==='0'))}$('warn').hidden=true;render()};
+  $('dep').onchange=e=>{st.dep=e.target.value;render()};
+  $('arr').onchange=e=>{st.arr=e.target.value;render()};
+  $('dl').oninput=e=>{st.dl=+e.target.value;render()};
+  $('du').oninput=e=>{st.du=+e.target.value;render()};
+  segs('cls','cls');segs('stp','stp');
+  defaultDur();render();
+}
+init();
+</script>
+</body>
+</html>
