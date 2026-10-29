@@ -1,5 +1,7 @@
 # ✈️ Flight Price Prediction using Machine Learning
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Netlify-00C7B7?logo=netlify&logoColor=white)](https://flight-priceprediction.netlify.app)
+
 Predictive Analytics project — predicting flight ticket prices in India using 5 different regression models and comparing their performance.
 
 ## 📌 About the Project
@@ -56,8 +58,9 @@ Complete workflow followed:
 
 ## 🌐 Live Demo
 
-**👉 Netlify:** https://flight-price-prediction-asmi.netlify.app
-**👉 Render:** https://flight-price-prediction.onrender.com
+**👉 Live app:** https://flight-priceprediction.netlify.app
+
+**💻 GitHub:** https://github.com/asmipandey3762/flight-price-prediction
 
 Select source/destination city, airline, class, stops, timings and days left — the trained XGBoost model predicts the ticket price instantly in the browser. It also shows a chart of how the fare changes if you book on a different day. (Website code is in the `docs/` folder.)
 
